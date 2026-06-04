@@ -1,0 +1,5 @@
+| Роль (Role / ClusterRole) | Полномочия (Permissions) | Группа пользователей (Group) | Представители в PropDevelopment |
+| :--- | :--- | :--- | :--- |
+| **`security-admin`** (ClusterRole) | `get`, `list`, `watch` для `secrets`, `pods`, `nodes`, `namespaces`. Управление RBAC (`roles`, `rolebindings`). | `propdev-security-admins` | Специалист по ИБ, Lead DevOps (аудит безопасности) |
+| **`cluster-viewer`** (ClusterRole) | `get`, `list`, `watch` для `pods`, `services`, `deployments`, `configmaps`. **Запрет** на `secrets` и любые `write` операции. | `propdev-auditors` | Бизнес-аналитики, BI-аналитики, Менеджеры продуктов |
+| **`namespace-manager`** (Role) | Полный доступ (`*`) к ресурсам (`pods`, `deployments`, `services`, `configmaps`, `secrets`) **в пределах конкретного namespace** (например, `zhku` или `sales`). | `propdev-devops` | DevOps-инженеры, Инженеры по эксплуатации доменов |

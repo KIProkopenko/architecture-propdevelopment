@@ -1,0 +1,40 @@
+---
+# 1. ClusterRole для специалистов по ИБ (Просмотр секретов и управление RBAC)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: security-admin
+rules:
+- apiGroups: [""]
+  resources: ["secrets", "pods", "nodes", "namespaces", "configmaps"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
+  verbs: ["get", "list", "watch", "create", "update", "delete"]
+
+---
+# 2. ClusterRole для аудиторов и аналитиков (Только просмотр, без секретов)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-viewer
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps", "namespaces"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch"]
+# Явно НЕ включаем "secrets" и verbs: ["create", "update", "delete"]
+
+---
+# 3. Role для DevOps-инженеров (Полный доступ, но только внутри конкретного namespace)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: namespace-manager
+  namespace: zhku # Применяется только к namespace домена ЖКУ
+rules:
+- apiGroups: ["", "apps", "networking.k8s.io"]
+  resources: ["pods", "deployments", "services", "configmaps", "secrets", "ingresses"]
+  verbs: ["*"] # Полный доступ к ресурсам внутри этого namespace
